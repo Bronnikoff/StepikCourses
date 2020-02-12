@@ -23,7 +23,8 @@ class ExportJSON:
         return json.dumps({"name": self.name, "breed": self.breed})
 
 class UpgradeDog(Dog, ExportJSON):
-    pass
+    def __hash__(self):
+        return None
 
 class WoolenDog(Dog, ExportJSON):
     def __init__(self, name = None):
@@ -32,7 +33,10 @@ class WoolenDog(Dog, ExportJSON):
 
 
 pesik = UpgradeDog("Richard III", "Доберман")
-print(pesik.to_json())
-print(isinstance(pesik, object))
-wool = WoolenDog("Igor")
-print("LOL")
+print(id(pesik))
+pesik.name = "Lui II"
+print(id(pesik))
+dogger = pesik
+print(id(dogger))
+pesik.name = "Lui III"
+print(dogger.name)
