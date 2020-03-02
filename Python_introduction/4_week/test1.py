@@ -45,6 +45,17 @@ class open_file:
     def __exit__(self, *args):
         self.f.close()
 
+class Singleton:
+    item = None
+    def __new__(cls, name):
+        if cls.item is None:
+            cls.item = super().__new__(cls)
+        return cls.item
+    def __init__(self, name):
+        self.name = name
+    def __str__(self):
+        return self.name
+
 class another_manager:
     def __init__(self, exc):
         self.exc = exc
@@ -71,6 +82,26 @@ class time_managment:
 
     def __exit__(self, *args):
         print("Time in manager:", time.time() - self.time)
+
+class Caller:
+    def __init__(self, name):
+        self.name = name
+
+    def __getattr__(self, name):
+        print("Nothing found")
+        return None
+
+    def __delattr__(self, name):
+        val = getattr(self, name)
+        print(val)
+        object.__delattr__(self, name)
+
+    def hello(self):
+        print("Hello")
+    
+    def __getattribute__(self, name):
+        print("Call", name)
+        return object.__getattribute__(self, name)
 
 logger = Logger("test.txt")
 
@@ -104,3 +135,10 @@ with time_managment() as t:
     time.sleep(3)
     print("Wake up")
 
+a = Singleton("JAck")
+b = Singleton("Bob")
+print(a is b)
+print(a)
+
+a = Caller("Jack")
+del a.hello
